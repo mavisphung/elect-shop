@@ -1,0 +1,354 @@
+openapi: 3.1.0
+info:
+  title: Electronic Shop API
+  description: |
+    A simple e-commerce API for electronic products with JWT-based authentication.
+    
+    ## Authentication
+    This API uses JWT (JSON Web Tokens) for authentication. To access protected endpoints:
+    1. First, obtain a JWT token by calling the `/api/auth/login` endpoint with valid credentials
+    2. Include the token in the `Authorization` header as `Bearer <token>` for subsequent requests
+    
+    ## Default Users
+    For testing purposes, the following users are available:
+    - **Admin**: `admin@shop.com` / `admin123` (ADMIN role)
+    - **User**: `user@shop.com` / `user123` (USER role)
+  version: 1.0.0
+  license:
+    name: MIT License
+    url: https://opensource.org/licenses/MIT
+  contact:
+    name: Electronic Shop API Support
+    email: support@electronicshop.com
+
+servers:
+  - url: http://dev.electronicshop.com:8888
+    description: Development server
+  - url: https://api.electronicshop.com
+    description: Production server
+
+tags:
+  - name: Authentication
+    description: User authentication and authorization operations
+  - name: Health
+    description: Health check endpoints
+
+paths:
+  /api/auth/login:
+    post:
+      tags:
+        - Authentication
+      summary: User login
+      description: |
+        Authenticate a user with email and password credentials.
+        Returns a JWT access token that can be used for subsequent API calls.
+      operationId: loginUser
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+            examples:
+              admin_login:
+                summary: Admin user login
+                value:
+                  email: admin@shop.com
+                  password: admin123
+              regular_user_login:
+                summary: Regular user login
+                value:
+                  email: user@shop.com
+                  password: user123
+      responses:
+        '200':
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginResponse'
+              examples:
+                successful_login:
+                  summary: Successful login response
+                  value:
+                    token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbkBzaG9wLmNvbSIsImlhdCI6MTYzOTU4MjQwMCwiZXhwIjoxNjM5NjY4ODAwfQ.example
+                    type: Bearer
+                    username: admin@shop.com
+                    authorities:
+                      - authority: ROLE_ADMIN
+                      - authority: ROLE_USER
+        '400':
+          description: Invalid credentials
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                invalid_credentials:
+                  summary: Invalid login credentials
+                  value:
+                    error: Invalid credentials
+        '422':
+          description: Validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationErrorResponse'
+
+  /api/auth/check:
+    get:
+      tags:
+        - Authentication
+      summary: Check authentication status
+      description: |
+        Verify if the current JWT token is valid and the user is authenticated.
+        This endpoint requires a valid JWT token in the Authorization header.
+      operationId: checkAuth
+      security:
+        - BearerAuth: []
+      responses:
+        '204':
+          description: Authentication successful - user is authenticated
+        '401':
+          description: Unauthorized - invalid or missing token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                missing_token:
+                  summary: Missing authorization token
+                  value:
+                    error: Access token is missing or invalid
+                expired_token:
+                  summary: Expired token
+                  value:
+                    error: Token has expired
+        '403':
+          description: Forbidden - valid token but insufficient permissions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /api/auth/check:
+    get:
+      tags:
+        - Authentication
+      summary: Check authentication status
+      description: |
+        Verify if the current JWT token is valid and the user is authenticated.
+        This endpoint requires a valid JWT token in the Authorization header.
+      operationId: checkAuth
+      security:
+        - BearerAuth: []
+      responses:
+        '204':
+          description: Authentication successful - user is authenticated
+        '401':
+          description: Unauthorized - invalid or missing token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                missing_token:
+                  summary: Missing authorization token
+                  value:
+                    error: Access token is missing or invalid
+                expired_token:
+                  summary: Expired token
+                  value:
+                    error: Token has expired
+        '403':
+          description: Forbidden - valid token but insufficient permissions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /healthcheck:
+    get:
+      tags:
+        - Health
+      summary: Health check
+      description: Simple health check endpoint to verify if the service is running
+      operationId: healthCheck
+      responses:
+        '200':
+          description: Service is healthy
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthResponse'
+              examples:
+                healthy:
+                  summary: Healthy service response
+                  value:
+                    status: UP
+                    message: Electronic Shop API is running
+        '503':
+          description: Service unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                service_down:
+                  summary: Service is down
+                  value:
+                    error: Service temporarily unavailable
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: |
+        JWT token authentication. 
+        
+        Obtain a token by calling the `/api/auth/login` endpoint.
+        Include the token in requests as: `Authorization: Bearer <token>`
+
+  schemas:
+    LoginRequest:
+      type: object
+      required:
+        - email
+        - password
+      properties:
+        email:
+          type: string
+          format: email
+          description: User's email address
+          example: admin@shop.com
+          minLength: 5
+          maxLength: 100
+        password:
+          type: string
+          format: password
+          description: User's password
+          example: admin123
+          minLength: 6
+          maxLength: 50
+      description: Login credentials
+
+    LoginResponse:
+      type: object
+      required:
+        - token
+        - type
+        - username
+        - authorities
+      properties:
+        token:
+          type: string
+          description: JWT access token
+          example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbkBzaG9wLmNvbSIsImlhdCI6MTYzOTU4MjQwMCwiZXhwIjoxNjM5NjY4ODAwfQ.example
+        type:
+          type: string
+          description: Token type
+          example: Bearer
+          enum: [Bearer]
+        username:
+          type: string
+          description: Authenticated user's username
+          example: admin@shop.com
+        authorities:
+          type: array
+          description: User's roles and permissions
+          items:
+            $ref: '#/components/schemas/Authority'
+      description: Successful login response containing JWT token and user info
+
+    Authority:
+      type: object
+      required:
+        - authority
+      properties:
+        authority:
+          type: string
+          description: Role or permission name
+          example: ROLE_ADMIN
+          enum: [ROLE_ADMIN, ROLE_USER]
+      description: User authority/role
+
+    ErrorResponse:
+      type: object
+      required:
+        - error
+      properties:
+        error:
+          type: string
+          description: Error message
+          example: Invalid credentials
+        timestamp:
+          type: string
+          format: date-time
+          description: Error timestamp
+          example: 2024-01-15T10:30:00Z
+        path:
+          type: string
+          description: Request path that caused the error
+          example: /api/auth/login
+      description: Standard error response
+
+    ValidationErrorResponse:
+      type: object
+      required:
+        - error
+        - details
+      properties:
+        error:
+          type: string
+          description: General error message
+          example: Validation failed
+        details:
+          type: array
+          description: Detailed validation errors
+          items:
+            type: object
+            properties:
+              field:
+                type: string
+                description: Field that failed validation
+                example: email
+              message:
+                type: string
+                description: Validation error message
+                example: must be a valid email address
+        timestamp:
+          type: string
+          format: date-time
+          description: Error timestamp
+          example: 2024-01-15T10:30:00Z
+      description: Validation error response with field-specific details
+
+    HealthResponse:
+      type: object
+      required:
+        - status
+      properties:
+        status:
+          type: string
+          description: Service health status
+          example: UP
+          enum: [UP, DOWN, DEGRADED]
+        message:
+          type: string
+          description: Health status message
+          example: Electronic Shop API is running
+        timestamp:
+          type: string
+          format: date-time
+          description: Health check timestamp
+          example: 2024-01-15T10:30:00Z
+        version:
+          type: string
+          description: API version
+          example: 1.0.0
+      description: Health check response
+
+# Global security requirement - can be overridden per endpoint
+security: []
