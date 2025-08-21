@@ -1,6 +1,6 @@
 package me.huypc.elect_shop.entity;
 
-import java.util.List;
+import java.time.LocalDateTime;
 
 import org.hibernate.annotations.UuidGenerator;
 
@@ -9,40 +9,39 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 
 @Builder
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "products")
-public class Product {
+@Table(name = "deal_usages")
+public class DealUsage {
 
     @Id
     @UuidGenerator(style = UuidGenerator.Style.TIME)
     private String id;
 
-    @Column(nullable = false)
-    private String name;
-
-    @Column(nullable = false)
-    private Integer stock;
-
-    @Column(nullable = false)
-    private Double unitPrice;
+    @ManyToOne
+    @JoinColumn(name = "deal_id", nullable = false)
+    private Deal deal;
 
     @ManyToOne
-    @JoinColumn(name = "category_id", nullable = false)
-    private Category category;
+    @JoinColumn(name = "order_id", nullable = false)
+    private Order order;
 
-    @ToString.Exclude
-    @OneToMany(mappedBy = "product")
-    private List<OrderDetail> orderDetails;
+    @Column(nullable = false)
+    private String userId;
+
+    @Column
+    private Double discountAmount;
+
+    @Column
+    private LocalDateTime usedAt;
+
 }

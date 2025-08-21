@@ -11,7 +11,7 @@ import me.huypc.elect_shop.entity.Product;
 import me.huypc.elect_shop.exception.NotFoundException;
 import me.huypc.elect_shop.generated.dto.ProductItemDto;
 import me.huypc.elect_shop.generated.dto.ProductListDto;
-import me.huypc.elect_shop.generated.dto.ProductUpsertDto;
+import me.huypc.elect_shop.generated.dto.ProductUpsertForm;
 import me.huypc.elect_shop.repository.ProductRepository;
 
 import java.util.List;
@@ -24,11 +24,11 @@ public class ProductService {
     private final ProductRepository productRepository;
 
     @Transactional
-    public void createProduct(ProductUpsertDto productUpsertDto) {
+    public void createProduct(ProductUpsertForm productUpsertForm) {
         Product newProduct = Product.builder()
-                .name(productUpsertDto.getName())
-                .stock(productUpsertDto.getStock())
-                .unitPrice(productUpsertDto.getUnitPrice())
+                .name(productUpsertForm.getName())
+                .stock(productUpsertForm.getStock())
+                .unitPrice(productUpsertForm.getUnitPrice())
                 .build();
 
         productRepository.save(newProduct);
@@ -51,13 +51,13 @@ public class ProductService {
     }
 
     @Transactional
-    public void updateProduct(String id, ProductUpsertDto productUpsertDto) {
+    public void updateProduct(String id, ProductUpsertForm productUpsertForm) {
         Product existingProduct = productRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Product not found with id: " + id));
 
-        existingProduct.setName(productUpsertDto.getName());
-        existingProduct.setStock(productUpsertDto.getStock());
-        existingProduct.setUnitPrice(productUpsertDto.getUnitPrice());
+        existingProduct.setName(productUpsertForm.getName());
+        existingProduct.setStock(productUpsertForm.getStock());
+        existingProduct.setUnitPrice(productUpsertForm.getUnitPrice());
 
         productRepository.save(existingProduct);
     }

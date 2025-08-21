@@ -51,4 +51,11 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                              .body(new ErrorResponse("Internal Server Error"));
     }
+
+    @ExceptionHandler(BadValidationException.class)
+    public ResponseEntity<ErrorResponse> handleBadValidationException(BadValidationException e) {
+        log.error("BadValidationException occurred: {}", e.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                             .body(new ErrorResponse(e.getMessage()));
+    }
 }

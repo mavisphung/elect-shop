@@ -5,9 +5,11 @@
  */
 package me.huypc.elect_shop.generated.api;
 
+import me.huypc.elect_shop.generated.dto.DealUpdateExpirationForm;
 import me.huypc.elect_shop.generated.dto.ErrorResponse;
+import me.huypc.elect_shop.generated.dto.MultiSelectForm;
 import me.huypc.elect_shop.generated.dto.ProductListDto;
-import me.huypc.elect_shop.generated.dto.ProductUpsertDto;
+import me.huypc.elect_shop.generated.dto.ProductUpsertForm;
 import io.swagger.v3.oas.annotations.ExternalDocumentation;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -42,10 +44,55 @@ import jakarta.annotation.Generated;
 public interface AdminApi {
 
     /**
+     * POST /admin/deals/{id}/products : Add products to a deal
+     * Add products to a specific deal by its ID. Requires ADMIN role. 
+     *
+     * @param id Unique identifier of the resource (required)
+     * @param multiSelectForm  (required)
+     * @return Add products to deal successfully (status code 201)
+     *         or Unauthorized (status code 401)
+     *         or Forbidden (status code 403)
+     *         or Deal not found (status code 404)
+     *         or Internal server error (status code 50x)
+     */
+    @Operation(
+        operationId = "createDealProducts",
+        summary = "Add products to a deal",
+        description = "Add products to a specific deal by its ID. Requires ADMIN role. ",
+        tags = { "Admin" },
+        responses = {
+            @ApiResponse(responseCode = "201", description = "Add products to deal successfully"),
+            @ApiResponse(responseCode = "401", description = "Unauthorized"),
+            @ApiResponse(responseCode = "403", description = "Forbidden"),
+            @ApiResponse(responseCode = "404", description = "Deal not found", content = {
+                @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))
+            }),
+            @ApiResponse(responseCode = "50x", description = "Internal server error", content = {
+                @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))
+            })
+        },
+        security = {
+            @SecurityRequirement(name = "BearerAuth")
+        }
+    )
+    @RequestMapping(
+        method = RequestMethod.POST,
+        value = "/admin/deals/{id}/products",
+        produces = { "application/json" },
+        consumes = { "application/json" }
+    )
+    
+    ResponseEntity<Void> createDealProducts(
+        @Parameter(name = "id", description = "Unique identifier of the resource", required = true, in = ParameterIn.PATH) @PathVariable("id") String id,
+        @Parameter(name = "MultiSelectForm", description = "", required = true) @Valid @RequestBody MultiSelectForm multiSelectForm
+    );
+
+
+    /**
      * POST /admin/products : Create a new product
      * Create a new product in the system. Requires ADMIN role. 
      *
-     * @param productUpsertDto  (required)
+     * @param productUpsertForm  (required)
      * @return Product created successfully (status code 201)
      *         or Unauthorized (status code 401)
      *         or Forbidden (status code 403)
@@ -76,7 +123,7 @@ public interface AdminApi {
     )
     
     ResponseEntity<Void> createNewProduct(
-        @Parameter(name = "ProductUpsertDto", description = "", required = true) @Valid @RequestBody ProductUpsertDto productUpsertDto
+        @Parameter(name = "ProductUpsertForm", description = "", required = true) @Valid @RequestBody ProductUpsertForm productUpsertForm
     );
 
 
@@ -181,11 +228,60 @@ public interface AdminApi {
 
 
     /**
+     * PUT /admin/deals/{id} : Update the expiration date of an existing deal
+     * Update the expiration date of an existing deal. Requires ADMIN role. 
+     *
+     * @param id Unique identifier of the resource (required)
+     * @param dealUpdateExpirationForm  (required)
+     * @return Deal expiration updated successfully (status code 200)
+     *         or Bad request - invalid input (status code 400)
+     *         or Unauthorized (status code 401)
+     *         or Forbidden (status code 403)
+     *         or Deal not found (status code 404)
+     *         or Internal server error (status code 50x)
+     */
+    @Operation(
+        operationId = "updateDealExpiration",
+        summary = "Update the expiration date of an existing deal",
+        description = "Update the expiration date of an existing deal. Requires ADMIN role. ",
+        tags = { "Admin" },
+        responses = {
+            @ApiResponse(responseCode = "200", description = "Deal expiration updated successfully"),
+            @ApiResponse(responseCode = "400", description = "Bad request - invalid input", content = {
+                @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))
+            }),
+            @ApiResponse(responseCode = "401", description = "Unauthorized"),
+            @ApiResponse(responseCode = "403", description = "Forbidden"),
+            @ApiResponse(responseCode = "404", description = "Deal not found", content = {
+                @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))
+            }),
+            @ApiResponse(responseCode = "50x", description = "Internal server error", content = {
+                @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))
+            })
+        },
+        security = {
+            @SecurityRequirement(name = "BearerAuth")
+        }
+    )
+    @RequestMapping(
+        method = RequestMethod.PUT,
+        value = "/admin/deals/{id}",
+        produces = { "application/json" },
+        consumes = { "application/json" }
+    )
+    
+    ResponseEntity<Void> updateDealExpiration(
+        @Parameter(name = "id", description = "Unique identifier of the resource", required = true, in = ParameterIn.PATH) @PathVariable("id") String id,
+        @Parameter(name = "DealUpdateExpirationForm", description = "", required = true) @Valid @RequestBody DealUpdateExpirationForm dealUpdateExpirationForm
+    );
+
+
+    /**
      * PUT /admin/products/{id} : Update an existing product
      * Update an existing product by its ID. Requires ADMIN role. 
      *
      * @param id Unique identifier of the resource (required)
-     * @param productUpsertDto  (required)
+     * @param productUpsertForm  (required)
      * @return Product updated successfully (status code 200)
      *         or Bad request - invalid input (status code 400)
      *         or Unauthorized (status code 401)
@@ -225,7 +321,7 @@ public interface AdminApi {
     
     ResponseEntity<Void> updateProduct(
         @Parameter(name = "id", description = "Unique identifier of the resource", required = true, in = ParameterIn.PATH) @PathVariable("id") String id,
-        @Parameter(name = "ProductUpsertDto", description = "", required = true) @Valid @RequestBody ProductUpsertDto productUpsertDto
+        @Parameter(name = "ProductUpsertForm", description = "", required = true) @Valid @RequestBody ProductUpsertForm productUpsertForm
     );
 
 }

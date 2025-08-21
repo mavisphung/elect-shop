@@ -5,7 +5,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.RestController;
 
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import me.huypc.elect_shop.generated.api.AuthApi;
 import me.huypc.elect_shop.generated.dto.LoginRequest;

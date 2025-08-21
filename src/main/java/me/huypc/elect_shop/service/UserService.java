@@ -7,42 +7,29 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import lombok.RequiredArgsConstructor;
 import me.huypc.elect_shop.entity.User;
+import me.huypc.elect_shop.repository.UserRepository;
 
 @Service
+@RequiredArgsConstructor
 public class UserService implements UserDetailsService {
-    
-    private final Map<String, UserDetails> users = new ConcurrentHashMap<>();
-    private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
-    public UserService() {
-        // Create some demo users
-        users.put("admin@shop.com", User.builder()
-                .username("admin@shop.com")
-                .password(passwordEncoder.encode("admin123"))
-                .role(User.Role.ADMIN)
-                .build());
-        
-        users.put("user@shop.com", User.builder()
-                .username("user@shop.com")
-                .password(passwordEncoder.encode("user123"))
-                .role(User.Role.USER)
-                .build());
-    }
+    private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        UserDetails user = users.get(username);
-        if (user == null) {
-            throw new UsernameNotFoundException("User not found: " + username);
-        }
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
         return user;
     }
 
     public boolean validateUser(String username, String password) {
-        UserDetails user = users.get(username);
+        User user = (User) loadUserByUsername(username);
         return user != null && passwordEncoder.matches(password, user.getPassword());
     }
 }

@@ -36,9 +36,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 	implementation 'org.springframework.boot:spring-boot-starter-cache'
-	compileOnly 'org.projectlombok:lombok'
-	developmentOnly 'org.springframework.boot:spring-boot-devtools'
-	annotationProcessor 'org.projectlombok:lombok'
+	
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.security:spring-security-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
@@ -53,6 +51,11 @@ dependencies {
 
 	// mysql connector
 	runtimeOnly 'com.mysql:mysql-connector-j'
+
+    // lombok
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+
 }
 
 openApiValidate {
@@ -82,10 +85,6 @@ openApiGenerate {
         library: "spring-boot"
 	])
 
-	// globalProperties = [
-	// 	apis: "true",
-	// 	models: "true"
-	// ]
 }
 
 tasks.named('test') {

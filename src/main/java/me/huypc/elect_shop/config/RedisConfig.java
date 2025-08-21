@@ -9,7 +9,6 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
@@ -18,12 +17,12 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 public class RedisConfig {
 
     @Bean
-    public LettuceConnectionFactory redisConnectionFactory() {
+    LettuceConnectionFactory redisConnectionFactory() {
         return new LettuceConnectionFactory();
     }
 
     @Bean
-    public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory connectionFactory) {
+    RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory connectionFactory) {
         RedisTemplate<String, Object> template = new RedisTemplate<>();
         template.setConnectionFactory(connectionFactory);
         
@@ -44,18 +43,11 @@ public class RedisConfig {
     }
 
     @Bean
-    public ObjectMapper objectMapper() {
+    ObjectMapper objectMapper() {
         ObjectMapper mapper = new ObjectMapper();
         
         // Add support for Java 8 time types (LocalDateTime, etc.)
         mapper.registerModule(new JavaTimeModule());
-        
-        // Enable type information for polymorphic deserialization
-        // mapper.activateDefaultTyping(
-        //     mapper.getPolymorphicTypeValidator(),
-        //     ObjectMapper.DefaultTyping.NON_FINAL,
-        //     JsonTypeInfo.As.PROPERTY
-        // );
         
         return mapper;
     }

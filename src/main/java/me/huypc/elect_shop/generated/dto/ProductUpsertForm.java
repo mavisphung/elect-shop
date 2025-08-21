@@ -16,11 +16,11 @@ import java.util.*;
 import jakarta.annotation.Generated;
 
 /**
- * ProductUpsertDto
+ * ProductUpsertForm
  */
 
 @Generated(value = "org.openapitools.codegen.languages.SpringCodegen", comments = "Generator version: 7.14.0")
-public class ProductUpsertDto {
+public class ProductUpsertForm {
 
   private String name;
 
@@ -28,20 +28,20 @@ public class ProductUpsertDto {
 
   private Double unitPrice;
 
-  public ProductUpsertDto() {
+  public ProductUpsertForm() {
     super();
   }
 
   /**
    * Constructor with only required parameters
    */
-  public ProductUpsertDto(String name, Integer stock, Double unitPrice) {
+  public ProductUpsertForm(String name, Integer stock, Double unitPrice) {
     this.name = name;
     this.stock = stock;
     this.unitPrice = unitPrice;
   }
 
-  public ProductUpsertDto name(String name) {
+  public ProductUpsertForm name(String name) {
     this.name = name;
     return this;
   }
@@ -61,7 +61,7 @@ public class ProductUpsertDto {
     this.name = name;
   }
 
-  public ProductUpsertDto stock(Integer stock) {
+  public ProductUpsertForm stock(Integer stock) {
     this.stock = stock;
     return this;
   }
@@ -82,7 +82,7 @@ public class ProductUpsertDto {
     this.stock = stock;
   }
 
-  public ProductUpsertDto unitPrice(Double unitPrice) {
+  public ProductUpsertForm unitPrice(Double unitPrice) {
     this.unitPrice = unitPrice;
     return this;
   }
@@ -111,10 +111,10 @@ public class ProductUpsertDto {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    ProductUpsertDto productUpsertDto = (ProductUpsertDto) o;
-    return Objects.equals(this.name, productUpsertDto.name) &&
-        Objects.equals(this.stock, productUpsertDto.stock) &&
-        Objects.equals(this.unitPrice, productUpsertDto.unitPrice);
+    ProductUpsertForm productUpsertForm = (ProductUpsertForm) o;
+    return Objects.equals(this.name, productUpsertForm.name) &&
+        Objects.equals(this.stock, productUpsertForm.stock) &&
+        Objects.equals(this.unitPrice, productUpsertForm.unitPrice);
   }
 
   @Override
@@ -125,7 +125,7 @@ public class ProductUpsertDto {
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
-    sb.append("class ProductUpsertDto {\n");
+    sb.append("class ProductUpsertForm {\n");
     sb.append("    name: ").append(toIndentedString(name)).append("\n");
     sb.append("    stock: ").append(toIndentedString(stock)).append("\n");
     sb.append("    unitPrice: ").append(toIndentedString(unitPrice)).append("\n");
