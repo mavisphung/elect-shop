@@ -63,8 +63,8 @@ public class AdminController implements AdminApi {
     @Override
     public ResponseEntity<Void> updateDealExpiration(String id,
             @Valid DealUpdateExpirationForm dealUpdateExpirationForm) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'updateDealExpiration'");
+        dealService.updateDealExpiration(id, dealUpdateExpirationForm);
+        return ResponseEntity.noContent().build();
     }
 
 }
