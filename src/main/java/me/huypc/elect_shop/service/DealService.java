@@ -1,12 +1,10 @@
 package me.huypc.elect_shop.service;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
 
 import jakarta.transaction.Transactional;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import me.huypc.elect_shop.entity.Deal;
 import me.huypc.elect_shop.entity.DealProduct;
@@ -33,7 +31,7 @@ public class DealService {
                 .orElseThrow(() -> new NotFoundException("Deal not found: " + dealId));
 
         // find the deal_products first
-        List<DealProduct> foundDealProducts = dealProductRepository.findAllByDealIdAndInProductIds(dealId, selectedProductIds.getSelectedItems());
+        List<DealProduct> foundDealProducts = dealProductRepository.findAllByDealIdAndProductIdIn(dealId, selectedProductIds.getSelectedItems());
         if (foundDealProducts.size() > 0) {
             throw new BadValidationException("Some products are already added to the deal");
         }

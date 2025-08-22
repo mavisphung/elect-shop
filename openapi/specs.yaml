@@ -3,12 +3,12 @@ info:
   title: Electronic Shop API
   description: |
     A simple e-commerce API for electronic products with JWT-based authentication.
-    
+
     ## Authentication
     This API uses JWT (JSON Web Tokens) for authentication. To access protected endpoints:
     1. First, obtain a JWT token by calling the `/api/auth/login` endpoint with valid credentials
     2. Include the token in the `Authorization` header as `Bearer <token>` for subsequent requests
-    
+
     ## Default Users
     For testing purposes, the following users are available:
     - **Admin**: `admin@shop.com` / `admin123` (ADMIN role)
@@ -49,7 +49,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/LoginRequest'
+              $ref: "#/components/schemas/LoginRequest"
             examples:
               admin_login:
                 summary: Admin user login
@@ -62,35 +62,35 @@ paths:
                   email: user@shop.com
                   password: user123
       responses:
-        '200':
+        "200":
           description: Login successful
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/LoginResponse'
+                $ref: "#/components/schemas/LoginResponse"
               examples:
                 successful_login:
                   summary: Successful login response
                   value:
                     token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbkBzaG9wLmNvbSIsImlhdCI6MTYzOTU4MjQwMCwiZXhwIjoxNjM5NjY4ODAwfQ.example
                     username: admin@shop.com
-        '400':
+        "400":
           description: Invalid credentials
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
               examples:
                 invalid_credentials:
                   summary: Invalid login credentials
                   value:
                     error: Invalid credentials
-        '422':
+        "422":
           description: Validation error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ValidationErrorResponse'
+                $ref: "#/components/schemas/ValidationErrorResponse"
 
   /auth/check:
     get:
@@ -104,14 +104,14 @@ paths:
       security:
         - BearerAuth: []
       responses:
-        '204':
+        "204":
           description: Authentication successful - user is authenticated
-        '401':
+        "401":
           description: Unauthorized - invalid or missing token
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
               examples:
                 missing_token:
                   summary: Missing authorization token
@@ -121,12 +121,12 @@ paths:
                   summary: Expired token
                   value:
                     error: Token has expired
-        '403':
+        "403":
           description: Forbidden - valid token but insufficient permissions
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
   /healthcheck:
     get:
       tags:
@@ -136,24 +136,24 @@ paths:
       operationId: healthCheck
       security: []
       responses:
-        '200':
+        "200":
           description: Service is healthy
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/HealthResponse'
+                $ref: "#/components/schemas/HealthResponse"
               examples:
                 healthy:
                   summary: Healthy service response
                   value:
                     status: UP
                     timestamp: 2024-01-15T10:30:00Z
-        '503':
+        "503":
           description: Service unavailable
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
               examples:
                 service_down:
                   summary: Service is down
@@ -169,23 +169,23 @@ paths:
       operationId: getAllProducts
       security:
         - BearerAuth: []
-      parameters: 
-        - $ref: '#/components/parameters/Page'
-        - $ref: '#/components/parameters/Size'
-        - $ref: '#/components/parameters/SearchText'
+      parameters:
+        - $ref: "#/components/parameters/Page"
+        - $ref: "#/components/parameters/Size"
+        - $ref: "#/components/parameters/SearchText"
       responses:
-        '200':
+        "200":
           description: Successful response
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ProductListDto'
-        '401':
+                $ref: "#/components/schemas/ProductListDto"
+        "401":
           description: Unauthorized - invalid or missing token
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
               examples:
                 missing_token:
                   summary: Missing authorization token
@@ -195,25 +195,25 @@ paths:
                   summary: Expired token
                   value:
                     error: Token has expired
-        '403':
+        "403":
           description: Forbidden - valid token but insufficient permissions
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
-        '500':
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
           description: Internal server error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
               example:
                 error: "Internal server error"
     post:
       operationId: createNewProduct
-      tags: 
+      tags:
         - Admin
-      security: 
+      security:
         - BearerAuth: []
       summary: Create a new product
       description: |
@@ -225,32 +225,32 @@ paths:
             schema:
               $ref: '#/components/schemas/ProductUpsertForm'
       responses:
-        '201':
+        "201":
           description: Product created successfully
-        '401':
+        "401":
           description: Unauthorized
-        '403':
+        "403":
           description: Forbidden
-        '50x':
+        "50x":
           description: Internal server error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
               example:
                 error: "Internal server error"
   /admin/products/{id}:
     put:
       operationId: updateProduct
-      security: 
+      security:
         - BearerAuth: []
-      tags: 
+      tags:
         - Admin
       summary: Update an existing product
       description: |
         Update an existing product by its ID. Requires ADMIN role.
-      parameters: 
-        - $ref: '#/components/parameters/Id'
+      parameters:
+        - $ref: "#/components/parameters/Id"
       requestBody:
         required: true
         content:
@@ -260,66 +260,95 @@ paths:
       responses: 
         '200':
           description: Product updated successfully
-        '400':
+        "400":
           description: Bad request - invalid input
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
               example:
                 error: "Invalid product data"
-        '401':
+        "401":
           description: Unauthorized
-        '403':
+        "403":
           description: Forbidden
-        '404':
+        "404":
           description: Product not found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
               example:
                 error: "Not found"
-        '50x':
+        "50x":
           description: Internal server error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
               example:
                 error: "Internal server error"
     delete:
       operationId: deleteProduct
-      security: 
+      security:
         - BearerAuth: []
-      tags: 
+      tags:
         - Admin
       summary: Delete a product
       description: |
         Delete a product by its ID. Requires ADMIN role.
-      parameters: 
-        - $ref: '#/components/parameters/Id'
+      parameters:
+        - $ref: "#/components/parameters/Id"
       responses:
-        '204':
+        "204":
           description: Product deleted successfully
-        '401':
+        "401":
           description: Unauthorized
-        '403':
+        "403":
           description: Forbidden
-        '404':
+        "404":
           description: Product not found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
               example:
                 error: "Not found"
-        '50x':
+        "50x":
           description: Internal server error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                error: "Internal server error"
+  /public/products:
+    post:
+      operationId: getAllProductsPublic
+      security: []
+      tags:
+        - Public
+      summary: Get all products (public)
+      description: Retrieve a list of all products available to the public.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ProductFilterForm"
+      responses:
+        "200":
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProductListDto"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
               example:
                 error: "Internal server error"
   
@@ -422,7 +451,7 @@ components:
       bearerFormat: JWT
       description: |
         JWT token authentication. 
-        
+
         Obtain a token by calling the `/api/auth/login` endpoint.
         Include the token in requests as: `Authorization: Bearer <token>`
 
@@ -523,17 +552,16 @@ components:
           description: Health check timestamp
           example: 2024-01-15T10:30:00Z
       description: Health check response
-    
     ProductListDto:
-      allOf: 
-        - $ref: '#/components/schemas/PaginationProperties'
+      allOf:
+        - $ref: "#/components/schemas/PaginationProperties"
         - type: object
           properties:
             items:
               type: array
               items:
-                $ref: '#/components/schemas/ProductItemDto'
-    
+                $ref: "#/components/schemas/ProductItemDto"
+
     ProductItemDto:
       type: object
       required:
@@ -559,7 +587,48 @@ components:
           format: double
           description: Price per unit of the product
           example: 499.99
-    
+    PaginationRequest:
+      type: object
+      properties:
+        page:
+          type: integer
+          description: Page number to retrieve
+          default: 1
+          example: 1
+        size:
+          type: integer
+          description: Number of items per page
+          default: 10
+          example: 10
+        searchText:
+          type: string
+          description: Search term to filter products by name
+          example: "Smart TV"
+    ProductFilterForm:
+      allOf:
+        - $ref: "#/components/schemas/PaginationRequest"
+        - type: object
+          properties:
+            category:
+              type: string
+              description: Filter products by category
+              example: "category-id"
+            minPrice:
+              type: number
+              format: double
+              description: Minimum price filter
+              example: 100.00
+              minimum: 0.0
+            maxPrice:
+              type: number
+              format: double
+              description: Maximum price filter
+              example: 1000.00
+              minimum: 0.0
+            isAvailable:
+              type: boolean
+              description: Filter products by quantity > 0
+              example: true
     PaginationProperties:
       type: object
       required:
@@ -588,6 +657,7 @@ components:
         - name
         - stock
         - unitPrice
+        - categoryId
       properties:
         name:
           type: string
@@ -604,7 +674,11 @@ components:
           minimum: 1
           description: Price per unit of the product
           example: 499.99
-    
+        categoryId:
+          type: string
+          description: Unique identifier for the product category
+          example: "category-id"
+
     DealUpdateExpirationForm:
       type: object
       properties:

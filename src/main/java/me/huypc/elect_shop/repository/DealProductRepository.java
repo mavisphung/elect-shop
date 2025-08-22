@@ -10,5 +10,5 @@ import me.huypc.elect_shop.entity.DealProduct;
 @Repository
 public interface DealProductRepository extends JpaRepository<DealProduct, String> {
 
-    List<DealProduct> findAllByDealIdAndInProductIds(String dealId, List<String> productIds);
+    List<DealProduct> findAllByDealIdAndProductIdIn(String dealId, List<String> productIds);
 }

@@ -1,17 +1,13 @@
 package me.huypc.elect_shop.entity;
 
-import java.util.List;
-
 import org.hibernate.annotations.UuidGenerator;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -24,27 +20,31 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "products")
-public class Product {
+@Table(name = "cart_items")
+public class CartItem {
 
     @Id
     @UuidGenerator(style = UuidGenerator.Style.TIME)
     private String id;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "cart_id", nullable = false)
+    @ToString.Exclude
+    private Cart cart;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "product_id", nullable = false)
+    @ToString.Exclude
+    private Product product;
+
     @Column(nullable = false)
-    private String name;
+    private Integer quantity;
 
     @Column(nullable = false)
     private Double unitPrice;
 
-    @OneToOne(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Inventory inventory;
-
-    @ManyToOne
-    @JoinColumn(name = "category_id", nullable = false)
-    private Category category;
-
-    @ToString.Exclude
-    @OneToMany(mappedBy = "product")
-    private List<OrderDetail> orderDetails;
+    // Helper methods
+    public double getTotalPrice() {
+        return quantity * unitPrice;
+    }
 }
