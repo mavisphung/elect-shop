@@ -84,10 +84,12 @@ public class ProductService {
     }
 
     private ProductItemDto convertToProductItemDto(Product product) {
+        // Calculate available stock: onHand - reserved
+        int availableStock = product.getInventory().getOnHand() - product.getInventory().getReserved();
         return new ProductItemDto(
                 product.getId(),
                 product.getName(),
-                product.getInventory().getOnHand(),
+                availableStock,
                 product.getUnitPrice()
         );
     }

@@ -26,6 +26,6 @@ public class UserService implements UserDetailsService {
 
     public boolean validateUser(String username, String password) {
         User user = (User) loadUserByUsername(username);
-        return user != null && passwordEncoder.matches(password, user.getPassword());
+        return passwordEncoder.matches(password, user.getPassword());
     }
 }

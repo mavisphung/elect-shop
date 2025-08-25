@@ -223,7 +223,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/ProductUpsertForm'
+              $ref: "#/components/schemas/ProductUpsertForm"
       responses:
         "201":
           description: Product created successfully
@@ -256,9 +256,9 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/ProductUpsertForm'
-      responses: 
-        '200':
+              $ref: "#/components/schemas/ProductUpsertForm"
+      responses:
+        "200":
           description: Product updated successfully
         "400":
           description: Bad request - invalid input
@@ -351,98 +351,211 @@ paths:
                 $ref: "#/components/schemas/ErrorResponse"
               example:
                 error: "Internal server error"
-  
+
   /admin/deals/{id}:
-    put: 
+    put:
       operationId: updateDealExpiration
-      tags: 
+      tags:
         - Admin
       summary: Update the expiration date of an existing deal
       description: |
         Update the expiration date of an existing deal. Requires ADMIN role.
-      security: 
+      security:
         - BearerAuth: []
-      parameters: 
-        - $ref: '#/components/parameters/Id' 
-      requestBody: 
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/DealUpdateExpirationForm'
-      responses: 
-        '200':
-          description: Deal expiration updated successfully
-        '400':
-          description: Bad request - invalid input
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-              example:
-                error: "Invalid deal data"
-        '401':
-          description: Unauthorized
-        '403':
-          description: Forbidden
-        '404':
-          description: Deal not found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-              example:
-                error: "Not found"
-        '50x':
-          description: Internal server error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-              example:
-                error: "Internal server error"
-  /admin/deals/{id}/products:
-    post:
-      operationId: createDealProducts
-      tags: 
-        - Admin
-      summary: Add products to a deal
-      description: |
-        Add products to a specific deal by its ID. Requires ADMIN role.
-      security: 
-        - BearerAuth: []
-      parameters: 
-        - $ref: '#/components/parameters/Id'
+      parameters:
+        - $ref: "#/components/parameters/Id"
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/MultiSelectForm'
+              $ref: "#/components/schemas/DealUpdateExpirationForm"
       responses:
-        '201':
-          description: Add products to deal successfully
-        '401':
+        "200":
+          description: Deal expiration updated successfully
+        "400":
+          description: Bad request - invalid input
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                error: "Invalid deal data"
+        "401":
           description: Unauthorized
-        '403':
+        "403":
           description: Forbidden
-        '404':
+        "404":
           description: Deal not found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
               example:
                 error: "Not found"
-        '50x':
+        "50x":
           description: Internal server error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
               example:
                 error: "Internal server error"
-
+  /admin/deals/{id}/products:
+    post:
+      operationId: createDealProducts
+      tags:
+        - Admin
+      summary: Add products to a deal
+      description: |
+        Add products to a specific deal by its ID. Requires ADMIN role.
+      security:
+        - BearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/Id"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/MultiSelectForm"
+      responses:
+        "201":
+          description: Add products to deal successfully
+        "401":
+          description: Unauthorized
+        "403":
+          description: Forbidden
+        "404":
+          description: Deal not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                error: "Not found"
+        "50x":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                error: "Internal server error"
+  /user/cart/add:
+    post:
+      operationId: addToUserCart
+      tags:
+        - User
+      summary: Add item to the current user cart
+      description: Add a product to the current user's shopping cart (basket).
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CartItemUpsertForm"
+      responses:
+        "200":
+          description: Successful response
+        "401":
+          description: Unauthorized
+        "403":
+          description: Forbidden
+        "404":
+          description: Cart not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                error: "Not found"
+        "50x":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                error: "Internal server error"
+  /user/cart/remove:
+    post:
+      operationId: removeFromUserCart
+      tags:
+        - User
+      summary: Remove item from the current user cart
+      description: Remove a product from the current user's shopping cart (basket).
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CartItemUpsertForm"
+      responses:
+        "200":
+          description: Successful response
+        "401":
+          description: Unauthorized
+        "403":
+          description: Forbidden
+        "404":
+          description: Cart not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                error: "Not found"
+        "50x":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                error: "Internal server error"
+  /user/orders/place:
+    post:
+      operationId: placeUserOrder
+      tags:
+        - User
+      summary: Place an order for the current user
+      description: Place an order for the current user based on the items in their shopping cart (basket).
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/OrderPlaceForm"
+      responses:
+        "200":
+          description: Successful response
+        "401":
+          description: Unauthorized
+        "403":
+          description: Forbidden
+        "404":
+          description: Cart not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                error: "Not found"
+        "50x":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              example:
+                error: "Internal server error"
 components:
   securitySchemes:
     BearerAuth:
@@ -650,7 +763,7 @@ components:
           type: integer
           description: Total number of items available
           example: 100
-    
+
     ProductUpsertForm:
       type: object
       required:
@@ -692,7 +805,7 @@ components:
           format: date-time
           description: New end date and time for the deal
           example: 2024-01-31T23:59:59Z
-      required: 
+      required:
         - newStartAt
         - newEndAt
 
@@ -708,6 +821,31 @@ components:
       required:
         - selectedItems
 
+    CartItemUpsertForm:
+      type: object
+      required:
+        - productId
+        - quantity
+      properties:
+        productId:
+          type: string
+          description: Unique identifier of the product to add to the cart
+          example: "12345"
+        quantity:
+          type: integer
+          description: Quantity of the product to add
+          minimum: 1
+          example: 2
+    
+    OrderPlaceForm:
+      type: object
+      required:
+        - shippingAddress
+      properties:
+        shippingAddress:
+          type: string
+          description: Shipping address for the order
+          example: "123 Main St, Anytown, USA"
   parameters:
     Page:
       name: page

@@ -22,7 +22,9 @@ public interface ProductRepository extends JpaRepository<Product, String> {
             AND (:categoryId IS NULL OR p.category.id = :categoryId)
             AND (:minPrice IS NULL OR p.unitPrice >= :minPrice)
             AND (:maxPrice IS NULL OR p.unitPrice <= :maxPrice)
-            AND (:isAvailable IS NULL OR CASE WHEN :isAvailable = true THEN p.inventory.onHand - p.inventory.reserved > 0 END)
+            AND (:isAvailable IS NULL OR 
+                 (:isAvailable = true AND p.inventory.onHand - p.inventory.reserved > 0) OR 
+                 (:isAvailable = false AND p.inventory.onHand - p.inventory.reserved <= 0))
             """)
     Page<Product> findAllByFilter(String searchText, String categoryId, Double minPrice, Double maxPrice, Boolean isAvailable, Pageable pageable);
 }

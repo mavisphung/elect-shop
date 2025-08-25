@@ -12,6 +12,7 @@ import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
 import jakarta.persistence.Index;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -34,8 +35,11 @@ public class Order {
     @UuidGenerator(style = UuidGenerator.Style.TIME)
     private String id;
 
-    @Column(nullable = false)
-    private String userId;
+    @ManyToOne(optional = false)
+    private User user;
+
+    @Column
+    private String shippingAddress;
 
     @Column(nullable = false)
     private LocalDateTime createdAt;
@@ -56,4 +60,7 @@ public class Order {
     @ToString.Exclude
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
     private List<OrderDetail> orderDetails;
+
+    @Column
+    private Double totalPrice;
 }
