@@ -16,11 +16,11 @@ import java.util.*;
 import jakarta.annotation.Generated;
 
 /**
- * ProductUpsertForm
+ * ProductUpsertDto
  */
 
 @Generated(value = "org.openapitools.codegen.languages.SpringCodegen", comments = "Generator version: 7.14.0")
-public class ProductUpsertForm {
+public class ProductUpsertDto {
 
   private String name;
 
@@ -28,23 +28,20 @@ public class ProductUpsertForm {
 
   private Double unitPrice;
 
-  private String categoryId;
-
-  public ProductUpsertForm() {
+  public ProductUpsertDto() {
     super();
   }
 
   /**
    * Constructor with only required parameters
    */
-  public ProductUpsertForm(String name, Integer stock, Double unitPrice, String categoryId) {
+  public ProductUpsertDto(String name, Integer stock, Double unitPrice) {
     this.name = name;
     this.stock = stock;
     this.unitPrice = unitPrice;
-    this.categoryId = categoryId;
   }
 
-  public ProductUpsertForm name(String name) {
+  public ProductUpsertDto name(String name) {
     this.name = name;
     return this;
   }
@@ -64,7 +61,7 @@ public class ProductUpsertForm {
     this.name = name;
   }
 
-  public ProductUpsertForm stock(Integer stock) {
+  public ProductUpsertDto stock(Integer stock) {
     this.stock = stock;
     return this;
   }
@@ -85,7 +82,7 @@ public class ProductUpsertForm {
     this.stock = stock;
   }
 
-  public ProductUpsertForm unitPrice(Double unitPrice) {
+  public ProductUpsertDto unitPrice(Double unitPrice) {
     this.unitPrice = unitPrice;
     return this;
   }
@@ -106,26 +103,6 @@ public class ProductUpsertForm {
     this.unitPrice = unitPrice;
   }
 
-  public ProductUpsertForm categoryId(String categoryId) {
-    this.categoryId = categoryId;
-    return this;
-  }
-
-  /**
-   * Unique identifier for the product category
-   * @return categoryId
-   */
-  @NotNull 
-  @Schema(name = "categoryId", example = "category-id", description = "Unique identifier for the product category", requiredMode = Schema.RequiredMode.REQUIRED)
-  @JsonProperty("categoryId")
-  public String getCategoryId() {
-    return categoryId;
-  }
-
-  public void setCategoryId(String categoryId) {
-    this.categoryId = categoryId;
-  }
-
   @Override
   public boolean equals(Object o) {
     if (this == o) {
@@ -134,26 +111,24 @@ public class ProductUpsertForm {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    ProductUpsertForm productUpsertForm = (ProductUpsertForm) o;
-    return Objects.equals(this.name, productUpsertForm.name) &&
-        Objects.equals(this.stock, productUpsertForm.stock) &&
-        Objects.equals(this.unitPrice, productUpsertForm.unitPrice) &&
-        Objects.equals(this.categoryId, productUpsertForm.categoryId);
+    ProductUpsertDto productUpsertDto = (ProductUpsertDto) o;
+    return Objects.equals(this.name, productUpsertDto.name) &&
+        Objects.equals(this.stock, productUpsertDto.stock) &&
+        Objects.equals(this.unitPrice, productUpsertDto.unitPrice);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(name, stock, unitPrice, categoryId);
+    return Objects.hash(name, stock, unitPrice);
   }
 
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
-    sb.append("class ProductUpsertForm {\n");
+    sb.append("class ProductUpsertDto {\n");
     sb.append("    name: ").append(toIndentedString(name)).append("\n");
     sb.append("    stock: ").append(toIndentedString(stock)).append("\n");
     sb.append("    unitPrice: ").append(toIndentedString(unitPrice)).append("\n");
-    sb.append("    categoryId: ").append(toIndentedString(categoryId)).append("\n");
     sb.append("}");
     return sb.toString();
   }

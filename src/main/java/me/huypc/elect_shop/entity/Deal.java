@@ -54,6 +54,23 @@ public class Deal {
     @Column
     private LocalDateTime endAt;
 
+    @Enumerated(EnumType.STRING)
+    @Builder.Default
+    private DealType dealType = DealType.SIMPLE_DISCOUNT;
+
+    public enum DealType {
+        SIMPLE_DISCOUNT, // regular discount percentage/amount off
+        BUY_X_GET_Y_OFF, // buy X get Y off
+        BULK_DISCOUNT, // bulk discount
+        BUY_ONE_GET_ONE // buy one get one free
+    }
+
+    @Column
+    private Integer buyQuantity;
+
+    @Column
+    private Integer getQuantity;
+
     @Column
     private Integer usageLimit;
 
@@ -63,4 +80,11 @@ public class Deal {
     @ToString.Exclude
     @OneToMany(mappedBy = "deal", fetch = FetchType.LAZY)
     private List<DealProduct> dealProducts;
+
+    public boolean isActive() {
+        LocalDateTime now = LocalDateTime.now();
+        return (startAt == null || startAt.isBefore(now)) &&
+               (endAt == null || endAt.isAfter(now)) &&
+               (usageLimit == null || usageCount < usageLimit);
+    }
 }

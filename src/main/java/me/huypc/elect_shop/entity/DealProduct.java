@@ -35,7 +35,4 @@ public class DealProduct {
     @ManyToOne
     @JoinColumn(name = "deal_id", nullable = false)
     private Deal deal;
-
-    @Column
-    private Double discountPrice;
 }

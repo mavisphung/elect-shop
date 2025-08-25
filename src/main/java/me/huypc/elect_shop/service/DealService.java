@@ -1,12 +1,12 @@
 package me.huypc.elect_shop.service;
 
-import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
 import jakarta.transaction.Transactional;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import me.huypc.elect_shop.entity.Deal;
 import me.huypc.elect_shop.entity.DealProduct;
@@ -29,40 +29,65 @@ public class DealService {
 
     @Transactional
     public void createDealProducts(String dealId, MultiSelectForm selectedProductIds) {
+        // Remove duplicates from input
+        List<String> uniqueProductIds = selectedProductIds.getSelectedItems().stream()
+                .distinct()
+                .collect(Collectors.toList());
+
+        // 1. Validate deal exists
         Deal foundDeal = dealRepository.findById(dealId)
                 .orElseThrow(() -> new NotFoundException("Deal not found: " + dealId));
 
-        // find the deal_products first
-        List<DealProduct> foundDealProducts = dealProductRepository.findAllByDealIdAndInProductIds(dealId, selectedProductIds.getSelectedItems());
-        if (foundDealProducts.size() > 0) {
-            throw new BadValidationException("Some products are already added to the deal");
+        // 2. Constraint 3: Validate all product IDs exist and provide specific missing IDs
+        List<Product> foundProducts = productRepository.findAllById(uniqueProductIds);
+        if (foundProducts.isEmpty() || foundProducts.size() != uniqueProductIds.size()) {
+            Set<String> foundProductIds = foundProducts.stream()
+                    .map(Product::getId)
+                    .collect(Collectors.toSet());
+            
+            List<String> missingProductIds = uniqueProductIds.stream()
+                    .filter(id -> !foundProductIds.contains(id))
+                    .collect(Collectors.toList());
+            
+            throw new NotFoundException("Products not found with IDs: " + missingProductIds);
         }
 
-        List<Product> foundProducts = productRepository.findAllById(selectedProductIds.getSelectedItems());
-
-        if (foundProducts.isEmpty() || foundProducts.size() != selectedProductIds.getSelectedItems().size()) {
-            throw new NotFoundException("Some products not found for the given IDs");
+        // 3. Constraint 1: Check if products are already in the SAME deal
+        List<DealProduct> existingDealProducts = dealProductRepository
+                .findAllByDealIdAndProductIdIn(dealId, uniqueProductIds);
+        
+        if (!existingDealProducts.isEmpty()) {
+            List<String> alreadyInSameDealIds = existingDealProducts.stream()
+                    .map(dp -> dp.getProduct().getId())
+                    .collect(Collectors.toList());
+            
+            throw new BadValidationException(
+                "Products are already in this deal: " + alreadyInSameDealIds
+            );
         }
 
+        // 4. Constraint 2: Check if products are already in OTHER deals (prevent stacking)
+        List<DealProduct> productsInOtherDeals = dealProductRepository
+                .findAllByProductIdIn(uniqueProductIds);
+        
+        if (!productsInOtherDeals.isEmpty()) {
+            List<String> conflictingProducts = productsInOtherDeals.stream()
+                    .map(dp -> dp.getProduct().getId() + " (already in deal: " + dp.getDeal().getDealCode() + ")")
+                    .collect(Collectors.toList());
+            
+            throw new BadValidationException(
+                "Products are already in other deals. Remove them from existing deals first: " + conflictingProducts
+            );
+        }
+
+        // 5. Create deal products - no stacking allowed
         foundProducts.forEach(product -> {
-            DealProduct dealProduct = new DealProduct();
-            dealProduct.setDeal(foundDeal);
-            dealProduct.setProduct(product);
-            Double discountPrice = calculateDiscountPrice(foundDeal, product);
-            dealProduct.setDiscountPrice(discountPrice);
+            DealProduct dealProduct = DealProduct.builder()
+                    .deal(foundDeal)
+                    .product(product)
+                    .build();
             dealProductRepository.save(dealProduct);
         });
-    }
-
-    private Double calculateDiscountPrice(Deal deal, Product product) {
-        switch (deal.getDiscountType()) {
-            case PERCENTAGE:
-                return product.getUnitPrice() * (1 - deal.getDiscountAmount() / 100);
-            case AMOUNT:
-                return product.getUnitPrice() - deal.getDiscountAmount();
-            default:
-                return null;
-        }
     }
 
     @Transactional

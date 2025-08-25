@@ -4,12 +4,14 @@ import java.util.List;
 
 import org.hibernate.annotations.UuidGenerator;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -33,13 +35,14 @@ public class Product {
     private String name;
 
     @Column(nullable = false)
-    private Integer stock;
-
-    @Column(nullable = false)
     private Double unitPrice;
+
+    @OneToOne(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Inventory inventory;
 
     @ManyToOne
     @JoinColumn(name = "category_id", nullable = false)
+    @ToString.Exclude
     private Category category;
 
     @ToString.Exclude

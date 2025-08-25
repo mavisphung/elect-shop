@@ -1,12 +1,8 @@
 package me.huypc.elect_shop.service;
 
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -30,6 +26,6 @@ public class UserService implements UserDetailsService {
 
     public boolean validateUser(String username, String password) {
         User user = (User) loadUserByUsername(username);
-        return user != null && passwordEncoder.matches(password, user.getPassword());
+        return passwordEncoder.matches(password, user.getPassword());
     }
 }

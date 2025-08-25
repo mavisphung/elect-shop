@@ -2,6 +2,8 @@ package me.huypc.elect_shop.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -57,5 +59,26 @@ public class GlobalExceptionHandler {
         log.error("BadValidationException occurred: {}", e.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                              .body(new ErrorResponse(e.getMessage()));
+    }
+
+    @ExceptionHandler(UsernameNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleUsernameNotFoundException(UsernameNotFoundException e) {
+        log.error("UsernameNotFoundException occurred: {}", e.getMessage());
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                             .body(new ErrorResponse(e.getMessage()));
+    }
+
+    @ExceptionHandler(ConflictResourceException.class)
+    public ResponseEntity<ErrorResponse> handleConflictResourceException(ConflictResourceException e) {
+        log.error("ConflictResourceException occurred: {}", e.getMessage());
+        return ResponseEntity.status(HttpStatus.CONFLICT)
+                             .body(new ErrorResponse(e.getMessage()));
+    }
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<ErrorResponse> handleHttpMessageNotReadableException(HttpMessageNotReadableException e) {
+        log.error("HttpMessageNotReadableException occurred: {}", e.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                             .body(new ErrorResponse("Malformed JSON request"));
     }
 }
